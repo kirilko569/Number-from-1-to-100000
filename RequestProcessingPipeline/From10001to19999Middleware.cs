@@ -1,10 +1,10 @@
 ﻿namespace RequestProcessingPipeline
 {
-    public class FromTwentyToHundredMiddleware
+    public class From10001to19999Middleware
     {
         private readonly RequestDelegate _next;
 
-        public FromTwentyToHundredMiddleware(RequestDelegate next)
+        public From10001to19999Middleware(RequestDelegate next)
         {
             this._next = next;
         }
@@ -15,25 +15,25 @@
             try
             {
                 int number = Convert.ToInt32(token);
+                string? result = string.Empty;
                 number = Math.Abs(number);
-                number %= 100;
-                if (number < 20)
+                number %= 100000;
+                if (number < 10001 || number > 19999)
                 {
                     await _next.Invoke(context);
                 }
                 else
                 {
-                    string? result = string.Empty;
-                    result = context.Session.GetString("number");
-                    number /= 10;
-                    string[] Numbers = { "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety" };
-                    context.Session.SetString("number", result + ' '+ Numbers[number - 2]);
+                    
+                    number /= 1000;
+                    string[] Numbers = { "ten","eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" };
+                    context.Session.SetString("number", result+" "+ Numbers[number - 10] + " thousand");
                     await _next.Invoke(context);
-                }              
+                }
             }
             catch (Exception)
             {
-                await context.Response.WriteAsync("Incorrect parameter 6");
+                await context.Response.WriteAsync("Incorrect parameter 2");
             }
         }
     }
